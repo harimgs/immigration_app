@@ -1,0 +1,123 @@
+{
+"default-update": {
+"lastupdated": "October 12, 2022"
+},
+
+"visitor-inside-canada": {
+"online": "15 days",
+"paper": "39 days"
+},
+
+"visitor_extension": {
+"online": "204 days",
+"paper": "185 days"
+},
+
+"study_permit_outside": {
+"study_permit_outside": "13 weeks"
+},
+
+"study_extension": {
+"online": "73 days",
+"paper": "78 days"
+},
+
+"work_extension_new_employer": {
+"online": "168 days",
+"paper": "91 days"
+},
+
+"iec": {
+"iec": "6 weeks",
+"iec_past": "38 weeks"
+},
+
+"eta": {
+"eta": "5 minutes"
+},
+
+"atlantic_immigration": {
+"atlantic_immigration": "15 months"
+},
+
+"cec": {
+"cec_ee": "17 months"
+},
+
+"quebec_business": {
+"quebec_business": "65 months"
+},
+
+"provincial_nominees_back": {
+"provincial_nominees_paper_back": "23 months",
+"provincial_nominees_ee": "15 months"
+},
+
+"self_employed_federal": {
+"self_employed_federal": "41 months"
+},
+
+"fed_skilled_workers": {
+"skilled_workers_ee": "26 months"
+},
+
+"fed_skilled_trades": {
+"skilled_trades_ee": "47 months"
+},
+
+"skilled_workers_quebec": {
+"skilled_workers_quebec": "24 months"
+},
+
+"startup_back": {
+"startup_back": "32 months"
+},
+
+"spouse_can": {
+"service_comittment": "14 months"
+},
+
+"spouse_int": {
+"service_comittment": "22 months"
+},
+
+"parent_grandparent_forward": {
+"parent_grandparent_forward": "37 months"
+},
+
+"refugees_protected_back": {
+"refugees_protected_past": "21 months"
+},
+
+"humanitarian_compassionate_back": {
+"humanitarian_compassionate_back": "22 months"
+},
+
+"citizenship": {
+"grant_after2015": "25 months",
+"cit_cert": "17 months",
+"cit_resumption": "23 months",
+"cit_renunciation": "17 months",
+"cit_search": "16 months",
+"cit_adoption_part1": "Part 1: 12 months"
+},
+
+"pr_card": {
+"new_pr": "64 days",
+"existing_pr": "91 days"
+},
+
+"rep_documents": {
+"vos": "23 weeks",
+"replacement": "4 weeks",
+"amend_imm": "30 weeks",
+"amend_tr": "15 weeks"
+},
+
+"caregivers": {
+"childcare": "32 months",
+"childcare_pr": "27 months",
+"supportworker": "32 months",
+"supportworker_pr": "28 months"
+}
+}

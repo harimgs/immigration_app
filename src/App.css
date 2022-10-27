@@ -1,0 +1,51 @@
+.sideBanner {
+  position: absolute;
+  width: 150px;
+  /* height: 200px; */
+  top: 65px;
+  right: 20px;
+  background-color: #999900;
+  color: #ffffff;
+}
+
+.white {
+  color: white;
+}
+
+.start {
+  opacity: 0;
+}
+
+.end {
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.dstart {
+  opacity: 0;
+}
+
+.dend {
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+
+.main-bg {
+  height: 300px;
+  background-image: url('./img/bg.png');
+  background-size: cover;
+  background-position: center;
+
+}
+.show {
+  transition:all 1s;
+}
+
+.hide{
+  visibility: hidden;
+  opacity: 0;
+  height: 0;
+  background-color: yellow;
+  position: fixed;
+}
