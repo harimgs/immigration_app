@@ -1,9 +1,10 @@
 import { Row, Form, Col } from "react-bootstrap";
 import DOMPurify from "dompurify";
+import { forwardRef } from "react";
 
 // props = {id, label, description, option ={}}
 
-function FormSelect(props) {
+const FormSelect = forwardRef((props, ref) => {
   const sanitizer = DOMPurify.sanitize;
   DOMPurify.addHook("afterSanitizeAttributes", function (node) {
     // set all elements owning target to target=_blank
@@ -33,6 +34,8 @@ function FormSelect(props) {
             id={props.id}
             name={props.id}
             onChange={props.onChange}
+            value={props.defaultValue}
+            ref={ref}
             >
             {props.option.map((option, i) => (
               <option key={option.value} value={option.value}>
@@ -44,6 +47,6 @@ function FormSelect(props) {
       </Form.Group>
     </fieldset>
   );
-}
+})
 
 export default FormSelect;

@@ -7,7 +7,7 @@ let calculation = createSlice({
     addScore(state, action) {
       let copy = state.score;
 
-      copy = state.score + action.payload.score;
+      copy = copy + action.payload.score;
 
       state.score = copy;
     },

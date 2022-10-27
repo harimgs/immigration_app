@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Container, Row, Button, Form, Col } from "react-bootstrap";
 
 import { useDispatch, useSelector } from "react-redux";
 import { addScore } from "../store/calculationSlice";
+
+import { calcIELTStoCLB } from "../utils/ieltsPointsCalculation";
+import { ageCalc, calculate_age } from "../utils/ageCalc";
 
 import FormCheck from "../Components/FormCheck";
 import FormInput from "../Components/FormInput";
@@ -11,81 +14,109 @@ import FormSelect from "../Components/FormSelect";
 import PartASource from "../source/PartASource";
 
 function Main() {
-  const [dob, setDob] = useState(0);
-  const [age, setAge] = useState(0);
+  const firstLangType = useRef(null);
 
-  const [isOn, setIsOn] = useState({ a: false, b: false });
-  const handleInputA = () => {
-    setIsOn({ ...isOn, a: !isOn.a });
-    console.log(isOn);
+  const [dob, setDob] = useState("");
+  const [age, setAge] = useState(0);
+  const [defaultValue, setDefaultValue] = useState({
+    firstLang: 0,
+    secondLangSwitch: false,
+    secondLang: 0,
+    withSpouseSwitch: 0,
+  });
+
+  const [isOn, setIsOn] = useState({
+    firstLang: false,
+    secondLangSwitch: false,
+    secondLang: false,
+    withSpouseSwitch: false,
+  });
+
+  const handleFirstLang = (e) => {
+    // first language select box
+    if (e.target.value == 0) {
+      setIsOn({
+        ...isOn,
+        firstLang: false,
+        secondLangSwitch: false,
+        secondLang: false,
+      });
+      setDefaultValue({ ...defaultValue, secondLangSwitch: false });
+    } else {
+      setIsOn({ ...isOn, firstLang: true });
+    }
   };
 
-  const handleInputB = () => {
-    setIsOn({ ...isOn, b: !isOn.b });
+  const handleSecondLangSwitch = () => {
+    // second language switch
+    setIsOn({ ...isOn, secondLangSwitch: !isOn.secondLangSwitch });
+    setDefaultValue({
+      ...defaultValue,
+      secondLangSwitch: 0,
+    });
+  };
+
+  const handleSecondLang = (e) => {
+    // second language select box
+    if (e.target.value == 0) {
+      setIsOn({ ...isOn, secondLang: false });
+      setDefaultValue({
+        ...defaultValue,
+        secondLang: !defaultValue.secondLang,
+      });
+    } else {
+      setIsOn({ ...isOn, secondLang: true });
+    }
+  };
+
+  const handleWithSpouseSwitch = () => {
+    // spouse select box
+    setIsOn({ ...isOn, withSpouseSwitch: !isOn.withSpouseSwitch });
   };
 
   const handleDOB = (e) => {
     setDob(e.target.value);
   };
 
-  const ageCalc = (age) => {
-    if (age <= 17 || age >= 45) {
-      return 0;
-    } else if (age === 44) {
-      return 5;
-    } else if (age === 43) {
-      return 15;
-    } else if (age === 42) {
-      return 25;
-    } else if (age === 41) {
-      return 35;
-    } else if (age === 40) {
-      return 45;
-    } else if (age === 39) {
-      return 50;
-    } else if (age === 38) {
-      return 55;
-    } else if (age === 37) {
-      return 60;
-    } else if (age === 36) {
-      return 65;
-    } else if (age === 35) {
-      return 70;
-    } else if (age === 34) {
-      return 75;
-    } else if (age === 33) {
-      return 80;
-    } else if (age === 32) {
-      return 85;
-    } else if (age === 18 || age === 31) {
-      return 90;
-    } else if (age === 19 || age === 30) {
-      return 95;
-    } else {
-      return 100;
-    }
-  };
-
-  const calculate_age = (dob) => {
-    var today = new Date();
-    var birthDate = new Date(dob);
-    var age_now = today.getFullYear() - birthDate.getFullYear();
-    var m = today.getMonth() - birthDate.getMonth();
-
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age_now--;
-    }
-    setAge(age_now);
-  };
-
   useEffect(() => {
-    calculate_age(dob);
+    let age = calculate_age(dob);
+    setAge(age);
   }, [dob]);
 
   const [score, setScore] = useState(0);
 
   const [edu, setEdu] = useState(0);
   const [canadianExp, setCanadianExp] = useState(0);
+
+  const [firstTestScore, setFirstTestScore] = useState({
+    speakingPoints: 0,
+    writingPoints: 0,
+    readingPoints: 0,
+    listeningPoints: 0,
+  });
+
+  const [firstTestCLB, setFirstTestCLB] = useState({
+    speakingPoints: 0,
+    writingPoints: 0,
+    readingPoints: 0,
+    listeningPoints: 0,
+  });
+
+  /// need to fix delay using useEffect
+  const firstLangCalc = (testscore, type) => {
+    if (firstLangType.current.value == 1) {
+      let score = calcIELTStoCLB(testscore, type);
+
+      setFirstTestCLB({
+        ...firstTestCLB,
+        [type]: score,
+      });
+    }
+  };
+
+  // useEffect(() => {
+  //   setFirstTestCLB({...firstTestCLB})
+  // }, [firstTestScore]);
 
   const onEdu = (e) => {
     setEdu(e.target.value);
@@ -96,14 +127,26 @@ function Main() {
   };
 
   useEffect(() => {
+    const sumValues = (obj) => Object.values(obj).reduce((a, b) => a + b, 0);
+    let clb = sumValues(firstTestCLB);
     let ageScore = ageCalc(age);
-    let total = Number(ageScore) + Number(edu) + Number(canadianExp);
+    let total =
+      Number(ageScore) + Number(edu) + Number(canadianExp) + Number(clb);
+
     setScore(total);
-  }, [age,edu, canadianExp]);
+  }, [age, edu, canadianExp, firstTestCLB]);
 
   return (
     <Container>
-      <h1 style={{ top: "10px", position: "sticky" }}>{score}</h1>
+      <h2 style={{ top: "10px", position: "sticky" }}>
+        Score:{score} - DOB: {ageCalc(age)} - Edu: {edu} - CanExp :{" "}
+        {canadianExp} <br />
+        {firstTestScore.listeningPoints}
+        <br />
+        speaking: {firstTestCLB.speakingPoints} writing:{" "}
+        {firstTestCLB.writingPoints} reading: {firstTestCLB.readingPoints}{" "}
+        listening: {firstTestCLB.listeningPoints}{" "}
+      </h2>
       <Row>
         <Col xs={12} md={12}>
           <h1>Express Entry Calculator</h1>
@@ -139,14 +182,27 @@ function Main() {
               label={PartASource.LANG_FIRST_TYPE_DATA.label}
               description={PartASource.LANG_FIRST_TYPE_DATA.description}
               option={PartASource.LANG_FIRST_TYPE_DATA.option}
+              onChange={handleFirstLang}
+              ref={firstLangType}
             />
-            <div id="examPointsForm">
+            <div
+              className={`${isOn.firstLang ? "show" : "hide"}`}
+              id="examPointsForm"
+            >
               {PartASource.LANG_TEST_DATA.map((LANG_TEST, i) => (
                 <FormInput
                   key={LANG_TEST.id}
                   id={LANG_TEST.id}
                   label={LANG_TEST.label}
                   type="text"
+                  value={firstTestScore[LANG_TEST.id]}
+                  onChange={(e) => {
+                    firstLangCalc(firstTestScore[LANG_TEST.id], LANG_TEST.id);
+                    setFirstTestScore({
+                      ...firstTestScore,
+                      [LANG_TEST.id]: e.target.value,
+                    });
+                  }}
                 />
               ))}
 
@@ -160,14 +216,15 @@ function Main() {
                   <Form.Check
                     type="switch"
                     id="secondLanguage"
-                    onChange={handleInputA}
+                    onChange={handleSecondLangSwitch}
+                    checked={defaultValue.secondLangSwitch}
                   />
                 </Col>
               </Form.Group>
             </div>
 
             <div
-              className={`${isOn.a ? "show" : "hide"}`}
+              className={`${isOn.secondLangSwitch ? "show" : "hide"}`}
               id="secondLanguageForm"
             >
               <FormSelect
@@ -175,15 +232,18 @@ function Main() {
                 label={PartASource.LANG_FIRST_TYPE_DATA.label}
                 description={PartASource.LANG_FIRST_TYPE_DATA.description}
                 option={PartASource.LANG_FIRST_TYPE_DATA.option}
+                onChange={handleSecondLang}
               />
-              {PartASource.LANG_SECOND_TEST_DATA.map((LANG_TEST, i) => (
-                <FormInput
-                  key={LANG_TEST.id}
-                  id={LANG_TEST.id}
-                  label={LANG_TEST.label}
-                  type="text"
-                />
-              ))}
+              <div className={`${isOn.secondLang ? "show" : "hide"}`}>
+                {PartASource.LANG_SECOND_TEST_DATA.map((LANG_TEST, i) => (
+                  <FormInput
+                    key={LANG_TEST.id}
+                    id={LANG_TEST.id}
+                    label={LANG_TEST.label}
+                    type="text"
+                  />
+                ))}
+              </div>
             </div>
             <FormSelect
               id={PartASource.CANADIAN_WORK_DATA.id}
@@ -249,12 +309,15 @@ function Main() {
                 <Form.Check
                   type="switch"
                   id="withSpouse"
-                  onChange={handleInputB}
+                  onChange={handleWithSpouseSwitch}
                 />
               </Col>
             </Form.Group>
 
-            <div className={`${isOn.b ? "show" : "hide"}`} id="wtihSpouseForm">
+            <div
+              className={`${isOn.withSpouseSwitch ? "show" : "hide"}`}
+              id="wtihSpouseForm"
+            >
               <FormCheck
                 id={PartASource.SPOUSE_EDU_DATA.id}
                 label={PartASource.SPOUSE_EDU_DATA.label}
